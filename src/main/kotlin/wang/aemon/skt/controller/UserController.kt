@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Validator
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiOperation
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 import wang.aemon.skt.controller.UserController.Companion.BASE_USER_URL
@@ -18,13 +19,13 @@ import wang.aemon.skt.service.UserService
 class UserController(
     private val userService: UserService
 ) {
-    val logger: org.slf4j.Logger = LoggerFactory.getLogger(UserController::class.java)
+    var logger: Logger = LoggerFactory.getLogger(javaClass)
 
     @ApiOperation(value = "根据ID查找用户")
     @ApiImplicitParam(paramType = "path", name = "id", value = "用户ID", required = true)
     @GetMapping("/{id}")
     fun findById(@PathVariable id: Long): CommonResponse {
-        logger.info("Test log")
+        logger.info("test log info")
         val user = this.userService.findById(id)
         return if (Validator.isNotEmpty(user)) {
             CommonResponse.success(CodeMessage.SUCCESS, user)
@@ -33,6 +34,7 @@ class UserController(
         }
     }
 
+    @ApiOperation(value = "查找全部用户")
     @GetMapping
     fun findAll(): CommonResponse {
         val result: List<User>? = this.userService.findAll()
@@ -43,6 +45,7 @@ class UserController(
         }
     }
 
+    @ApiOperation(value = "添加用户")
     @PostMapping
     fun save(@RequestBody user: User): CommonResponse {
         val result: Int = this.userService.save(user)
@@ -53,6 +56,7 @@ class UserController(
         }
     }
 
+    @ApiOperation(value = "根据ID修改用户")
     @PutMapping
     fun updateById(@RequestBody user: User): CommonResponse {
         val result = this.userService.updateById(user)
@@ -63,6 +67,7 @@ class UserController(
         }
     }
 
+    @ApiOperation(value = "根据ID删除用户")
     @DeleteMapping("/{id}")
     fun deleteById(@PathVariable id: Long): CommonResponse {
         val result = this.userService.deleteById(id)
